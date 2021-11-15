@@ -8,6 +8,7 @@ def urlScraper(page):
     soup = bs.BeautifulSoup(source,'lxml')
     htmlIngredients = soup.find_all('span', {'class': "ingredients-item-name"})
     for item in htmlIngredients:
+        print(item)
         ingredients.append(item.text)
     htmlInstructions = soup.find('ul', {'class':'instructions-section'})
     for item in htmlInstructions.find_all('li'):

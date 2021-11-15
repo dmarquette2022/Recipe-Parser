@@ -12,7 +12,7 @@ class Ingredient:
         self.quantity = quantity
         self.unit = unit
     
-def parseText(tokenizedItem):
+def parseText(tokenizedItem, original):
     #Looking for names
     name = []
     unit = ""
@@ -23,13 +23,10 @@ def parseText(tokenizedItem):
         if (item[1] == "NN" or item[1] == "NNS"  or item[1] == "NNP") and not re.search(measure_regex, item[0], flags=re.I):
             name.append(item[0])
         #Searches for numerical values
-        numSearch = re.findall(r'\d+', item[0], flags=re.I)
-        if numSearch:
-            amount = numSearch
-        
-        
-
-        
+        #numSearch = re.findall(r'\d+', item[0], flags=re.I)
+    numSearch = re.search(r"((\d+)\s*[\u00BC-\u00BE\u2150-\u215E])|[\u00BC-\u00BE\u2150-\u215E]|(\d+)", original, flags=re.I)
+    if numSearch:
+        amount = numSearch.group(0)       
     name = " ".join(name)
     
     return name, unit, amount
@@ -49,7 +46,7 @@ def main():
     ingredients, directions = urlScraper(page)
     for item in ingredients:
         parsedIng = pos_tag(word_tokenize(item))
-        name, unit, amount = parseText(parsedIng)
+        name, unit, amount = parseText(parsedIng, item)
         totIng.append(Ingredient(name, unit, amount))
     for item in directions:
         parsedDir = item
