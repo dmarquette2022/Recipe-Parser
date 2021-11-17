@@ -59,7 +59,6 @@ def parseTextChunk(sentence, grammar):
         prepCP = RegexpParser(g)
         for i in range(1, len(splits)):
             parsedPrep = pos_tag(word_tokenize(splits[i]))
-            print(parsedPrep)
             chunked = prepCP.parse(parsedPrep)
             for subtree in chunked.subtrees(): 
                 if subtree.label() == "CHUNK": 
