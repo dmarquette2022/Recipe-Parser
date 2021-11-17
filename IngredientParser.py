@@ -3,7 +3,7 @@ from pageScraper import urlScraper
 import re
 measure_regex = '(cup|spoon|fluid|ounce|pinch|gill|pint|quart|gallon|pound|drops|recipe|slices|pods|package|can|head|halves|stalk)'
 tool_indicator_regex = '(pan|skillet|pot|sheet|grate|whisk|griddle|bowl|oven|dish)'
-method_indicator_regex = '(boil|bake|baking|simmer|stir|roast|fry|combine|heat|cook)'
+method_indicator_regex = '(boil|bake|baking|simmer|stir|roast|fry|combine|heat|microwave|add)'
 time_indicator_regex = '(min|hour)'
 
 class Ingredient:
@@ -42,7 +42,9 @@ def parseTextChunk(sentence, grammar):
     #get numeric measurement
     numSearch = re.search(r"((\d+)\s*[\u00BC-\u00BE\u2150-\u215E])|[\u00BC-\u00BE\u2150-\u215E]|(\d+)", sentence, flags=re.I)
     if numSearch:
-        amount = numSearch.group(0)  
+        amount = numSearch.group(0)
+    else:
+        amount = ""
     chunked = cp.parse(parsedIng)
     #get Ingredient name
     name = []
@@ -88,13 +90,24 @@ class Step:
             temp = set(temp)
             #Designed to catch things that share one word (eg apple cider versus Fuji apple)
             #Tries to ensure we only add one item for each word max
-            if len(temp)>=2:
-                beforeCheck = [x.name for x in ingredients if " ".join([parsedInstr[i-1], inst]) in x.name]
-                afterCheck = [x.name for x in ingredients if " ".join([inst, parsedInstr[i+1]]) in x.name]
+            if len(temp)>=2 and i+1 < len(parsedInstr):
+                bef = " ".join([parsedInstr[i-1], inst])
+                aft = " ".join([inst, parsedInstr[i+1]])
+                beforeCheck = [x.name for x in ingredients if bef in x.name]
+                afterCheck = [x.name for x in ingredients if aft in x.name]
                 if beforeCheck:
                     temp = beforeCheck
                 elif afterCheck:
                     temp = afterCheck
+                else:
+                    bef = bef.split(" ")
+                    aft = aft.split(" ")
+                    befCheck1 = [x.name for x in ingredients if bef[0] in x.name]
+                    aftCheck2 = [x.name for x in ingredients if aft[1] in x.name]
+                    if len(befCheck1) > 0:
+                        temp = befCheck1
+                    elif len(aftCheck2) > 0:
+                        temp = aftCheck2
             tot += temp
         return set(tot)
     
@@ -105,7 +118,7 @@ class Step:
         for i,item in enumerate(tokenTime):
             if re.search('(hour)', item):
                 hours += int(tokenTime[i-1])
-            if re.search("min", item):
+            if re.search("min", item) and not re.search("alumin", item):
                 minutes += int(tokenTime[i-1])
         if hours == 0:
             return minutes
@@ -116,10 +129,16 @@ def parseSteps(url, totIng):
     totSteps = []
     ingredients, directions = urlScraper(url)
     for dir in directions:
+        dir = re.sub(" +", " ",dir)
+        dir = dir.strip()
         currList = []
         totSteps.append(currList)
         head = currList
-        broken = dir.split(".")
+        broken = dir.split('.')
+        newItem = []
+        for item in broken:
+            newItem += item.split(";")
+        broken = newItem
         for i, ind in enumerate(broken):
             test = Step(ind, totIng)
             if not test.tools and not test.methods and not test.ingredients:
@@ -129,14 +148,29 @@ def parseSteps(url, totIng):
                 currList.append(y)
                 currList = y
             else:
-                currList.append(test)
                 currList = head
+                currList.append(test)
+                
     return totSteps
-            
+
+def totalToolsMethods(url):
+    totTools = []
+    totMethods = []
+    page = url
+    ingredients, directions = urlScraper(page)
+    for dir in directions:
+        dir = re.sub(" +", " ",dir)
+        dir = dir.strip()
+        tools = (re.findall(tool_indicator_regex, dir, flags=re.I))
+        methods = (re.findall(method_indicator_regex, dir, flags=re.I))
+        totTools += tools
+        totMethods += methods
+
+    return totMethods, totTools
 
 def findAllIng(url):
     totIng = []
-    page = "https://www.allrecipes.com/recipe/216032/apple-cider-stew/"
+    page = url
     ingredients, directions = urlScraper(page)
     for item in ingredients:
         grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
@@ -149,16 +183,19 @@ def findAllIng(url):
 class Recipe:
     def __init__(self, url):
         temp = findAllIng(url)
-        self.ingredients = temp[0]
-        self.tools = temp[1]
-        self.methods = temp[2]
-        self.instructions = parseSteps(url, temp[0])
+        self.ingredients = temp
+        tm = totalToolsMethods(url)
+        self.tools = tm[1]
+        self.methods = tm[0]
+        self.instructions = parseSteps(url, temp)
+    
+
 
 def main():
     totIng = []
     totTools = []
     totMethods = []
-    page = "https://www.allrecipes.com/recipe/216032/apple-cider-stew/"
+    page = "https://www.allrecipes.com/recipe/267015/pakistani-ground-beef-curry/"
     ingredients, directions = urlScraper(page)
     for item in ingredients:
         grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
@@ -166,7 +203,7 @@ def main():
         # parsedIng = pos_tag(word_tokenize(item))
         # name, unit, amount = parseText(parsedIng, item)
         totIng.append(Ingredient(name, unit, amount, preperation))
-    t = parseSteps(page, totIng)
+    t = Recipe(page)
     for item in directions:
         parsedDir = item
         tools, methods = parseToolsMethods(parsedDir)
