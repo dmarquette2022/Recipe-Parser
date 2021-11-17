@@ -57,12 +57,20 @@ def parseTextChunk(sentence, grammar):
     #get preparation if available
     preperation = []
     if len(splits) > 1:
+        g = r"CHUNK: {<JJ>*<IN>*<VBN|VBD|NN|NNS|NNP>}"
+        prepCP = RegexpParser(g)
         for i in range(1, len(splits)):
             parsedPrep = pos_tag(word_tokenize(splits[i]))
             print(parsedPrep)
-            curr = [item[0] for item in parsedPrep if item[1] in ['VBN', 'VBD']]
-            for c in curr: 
-                preperation.append(c)
+            chunked = prepCP.parse(parsedPrep)
+            for subtree in chunked.subtrees(): 
+                if subtree.label() == "CHUNK": 
+                    words = [leaf[0] for leaf in subtree.leaves() if leaf[0] != "Optional"]
+                    phrase = " ".join(words)
+                    preperation.append(phrase)
+            # curr = [item[0] for item in parsedPrep if item[1] in ['VBN', 'VBD', ''] and item[0] != 'Optional']
+            # for c in curr: 
+            #     preperation.append(c)
     return name, unit, amount, preperation
 
 def parseToolsMethods(tokenizedItem):
