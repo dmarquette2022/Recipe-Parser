@@ -3,7 +3,7 @@ from pageScraper import urlScraper
 import re
 measure_regex = '(cup|spoon|fluid|ounce|pinch|gill|pint|quart|gallon|pound|drops|recipe|slices|pods|package|can|head|halves|stalk)'
 tool_indicator_regex = '(pan|skillet|pot|sheet|grate|whisk|griddle|bowl|oven|dish)'
-method_indicator_regex = '(boil|bake|baking|simmer|stir|roast|fry)'
+method_indicator_regex = '(boil|bake|baking|simmer|stir|roast|fry|combine|heat|cook)'
 time_indicator_regex = '(min|hour)'
 
 class Ingredient:
@@ -78,6 +78,90 @@ def parseToolsMethods(tokenizedItem):
     methods = (re.findall(method_indicator_regex, tokenizedItem, flags=re.I))
     return tools, methods
 
+class Step:
+    def __init__(self, instruction, ingredients):
+        res = parseToolsMethods(instruction)
+        self.tools = res[0]
+        self.ingredients = self.findIng(instruction, ingredients)
+        self.methods = res[1]
+        self.time = self.findTime(instruction)
+    
+    def findIng(self, instruction, ingredients):
+        name = []
+        parsedInstr = (word_tokenize(instruction))
+        tot = []
+        for i, inst in enumerate(parsedInstr):
+            #creates a list of all ingredient names the current instruction word appears in
+            temp = [x.name for x in ingredients if inst in x.name and len(inst)>2]
+            temp = set(temp)
+            #Designed to catch things that share one word (eg apple cider versus Fuji apple)
+            #Tries to ensure we only add one item for each word max
+            if len(temp)>=2:
+                beforeCheck = [x.name for x in ingredients if " ".join([parsedInstr[i-1], inst]) in x.name]
+                afterCheck = [x.name for x in ingredients if " ".join([inst, parsedInstr[i+1]]) in x.name]
+                if beforeCheck:
+                    temp = beforeCheck
+                elif afterCheck:
+                    temp = afterCheck
+            tot += temp
+        return set(tot)
+    
+    def findTime(self, instruction):
+        tokenTime = word_tokenize(instruction)
+        hours = 0
+        minutes = 0
+        for i,item in enumerate(tokenTime):
+            if re.search('(hour)', item):
+                hours += int(tokenTime[i-1])
+            if re.search("min", item):
+                minutes += int(tokenTime[i-1])
+        if hours == 0:
+            return minutes
+        else:
+            return (hours * 60) + minutes
+
+def parseSteps(url, totIng):
+    totSteps = []
+    ingredients, directions = urlScraper(url)
+    for dir in directions:
+        currList = []
+        totSteps.append(currList)
+        head = currList
+        broken = dir.split(".")
+        for i, ind in enumerate(broken):
+            test = Step(ind, totIng)
+            if not test.tools and not test.methods and not test.ingredients:
+                continue
+            elif not (test.tools or test.methods or test.ingredients):
+                y = [test]
+                currList.append(y)
+                currList = y
+            else:
+                currList.append(test)
+                currList = head
+    return totSteps
+            
+
+def findAllIng(url):
+    totIng = []
+    page = "https://www.allrecipes.com/recipe/216032/apple-cider-stew/"
+    ingredients, directions = urlScraper(page)
+    for item in ingredients:
+        grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
+        name, unit, amount, preperation = parseTextChunk(item, grammar)
+        # parsedIng = pos_tag(word_tokenize(item))
+        # name, unit, amount = parseText(parsedIng, item)
+        totIng.append(Ingredient(name, unit, amount, preperation))
+    return totIng
+
+class Recipe:
+    def __init__(self, url):
+        temp = findAllIng(url)
+        self.ingredients = temp[0]
+        self.tools = temp[1]
+        self.methods = temp[2]
+        self.instructions = parseSteps(url, temp[0])
+
 def main():
     totIng = []
     totTools = []
@@ -90,6 +174,7 @@ def main():
         # parsedIng = pos_tag(word_tokenize(item))
         # name, unit, amount = parseText(parsedIng, item)
         totIng.append(Ingredient(name, unit, amount, preperation))
+    t = parseSteps(page, totIng)
     for item in directions:
         parsedDir = item
         tools, methods = parseToolsMethods(parsedDir)
