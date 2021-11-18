@@ -10,7 +10,8 @@ def urlScraper(page):
     for item in htmlIngredients:
         ingredients.append(item.text)
     htmlInstructions = soup.find('ul', {'class':'instructions-section'})
-    for item in htmlInstructions.find_all('li'):
+    # for item in htmlInstructions.find_all('li'):
+    for item in htmlInstructions.find_all('p'):
         instructions.append(item.text)
     return ingredients, instructions
 
