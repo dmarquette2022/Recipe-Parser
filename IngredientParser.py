@@ -53,7 +53,7 @@ def parseTextChunk(sentence, grammar):
             words = [leaf[0] for leaf in subtree.leaves() if leaf[0] not in unit and leaf[0] not in amount and leaf[0] != 'Optional']
             phrase = " ".join(words)
             name.append(phrase)
-    name = " ".join(name)
+    name = " ".join(name).lstrip()
     #get preparation if available
     preperation = []
     if len(splits) > 1:
@@ -157,7 +157,6 @@ def parseSteps(url, totIng):
             else:
                 currList = head
                 currList.append(test)
-                
     return totSteps
 
 def totalToolsMethods(url):
@@ -195,7 +194,6 @@ class Recipe:
         self.tools = tm[1]
         self.methods = tm[0]
         self.instructions = parseSteps(url, temp)
-    
 
 
 def main():
@@ -224,6 +222,9 @@ def main():
         print('\n')
     print("Tools: " + str(set(totTools)))
     print("Methods: " + str(set(totMethods)))
+    for steps in t.instructions:
+        for index, step in enumerate(steps): 
+            print("Step " + str(index) + " : " + str(step.ingredients) + " " + str(step.tools))
 
 if __name__ == '__main__':
     main()
