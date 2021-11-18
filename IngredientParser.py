@@ -1,3 +1,4 @@
+from json import detect_encoding
 from nltk import word_tokenize, pos_tag, RegexpParser
 from pageScraper import urlScraper
 import re
@@ -5,6 +6,22 @@ measure_regex = '(cup|spoon|fluid|ounce|pinch|gill|pint|quart|gallon|pound|drops
 tool_indicator_regex = '(pan|skillet|pot|sheet|grate|whisk|griddle|bowl|oven|dish)'
 method_indicator_regex = '(boil|bake|baking|simmer|stir|roast|fry|combine|heat|microwave|add)'
 time_indicator_regex = '(min|hour)'
+with open("foods/sauces.txt", encoding='utf-8') as f:
+    sauce_list = f.read().splitlines()
+with open("foods/dairy.txt", encoding='utf-8') as f:
+    dairy_list = f.read().splitlines()
+with open("foods/fruits.txt", encoding='utf-8') as f:
+    fruits_list = f.read().splitlines()
+with open("foods/grains.txt", encoding='utf-8') as f:
+    grains_list = f.read().splitlines()
+with open("foods/meats.txt", encoding='utf-8') as f:
+    meats_list = f.read().splitlines()
+with open("foods/seafood.txt", encoding='utf-8') as f:
+    seafood_list = f.read().splitlines()
+with open("foods/vegetables.txt", encoding='utf-8') as f:
+    vegetables_list = f.read().splitlines()
+with open("foods/spices.txt", encoding='utf-8') as f:
+    spices_list = f.read().splitlines()
 
 class Ingredient:
     def __init__(self, name, unit, quantity=None, preperation=None):
@@ -12,6 +29,7 @@ class Ingredient:
         self.quantity = quantity
         self.unit = unit
         self.preperation = preperation
+        self.type = categorize(self)
 #with nltk tokenization     
 def parseText(tokenizedItem, original):
     #Looking for names
@@ -32,6 +50,23 @@ def parseText(tokenizedItem, original):
     
     return name, unit, amount
 
+def categorize(self):
+    # special cases:
+    if self.name.lower().find('sauce') >= 0: return 'S'
+    # normal execution:
+    types = ''
+    if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in spices_list) and len(types) ==0: types = 'H'
+    
+    if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in meats_list) and len(types) ==0: types ='M' 
+    if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in vegetables_list) and len(types) ==0: types = 'V'
+    if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in dairy_list) and len(types) ==0: types = 'D' 
+    if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in grains_list) and len(types) ==0: types = 'G'
+    if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in grains_list) and len(types) ==0: types = 'G'
+    if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in sauce_list) and len(types) ==0: types = 'S'
+    if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in seafood_list) and len(types) ==0: types = 'P'
+    if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in fruits_list) and len(types) ==0: types = 'F' 
+    if len(types) == 0: types = '?'
+    return types
 #with nltk chunk 
 def parseTextChunk(sentence, grammar): 
     cp = RegexpParser(grammar)
@@ -175,6 +210,7 @@ def totalToolsMethods(url):
         totMethods += methods
 
     return totMethods, totTools
+
 
 def findAllIng(url):
     totIng = []
