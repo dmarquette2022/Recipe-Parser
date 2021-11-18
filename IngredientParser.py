@@ -196,11 +196,11 @@ class Recipe:
         self.instructions = parseSteps(url, temp)
 
 
-def main():
+def getRecipe(page):
     totIng = []
     totTools = []
     totMethods = []
-    page = "https://www.allrecipes.com/recipe/267015/pakistani-ground-beef-curry/"
+    #page = "https://www.allrecipes.com/recipe/267015/pakistani-ground-beef-curry/"
     ingredients, directions = urlScraper(page)
     for item in ingredients:
         grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
@@ -226,5 +226,5 @@ def main():
         for index, step in enumerate(steps): 
             print("Step " + str(index) + " : " + str(step.ingredients) + " " + str(step.tools))
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     getRecipe()

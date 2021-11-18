@@ -15,6 +15,9 @@ def replacement(sentence):
 
 def reducement(ingredient, grammar): 
     name, unit, amount, preperation  = parseTextChunk(ingredient, grammar)
+    for pair in healthy_unhealthy:
+        if name in pair['unhealthy']:
+            name = pair['healthy']
     if len(amount) == 1:
         amount = numeric(amount)
     elif amount[-1].isdigit():
@@ -26,8 +29,8 @@ def reducement(ingredient, grammar):
     return name, unit, amount, preperation
      
 
-def main(): 
-    page = "https://www.allrecipes.com/recipe/267015/pakistani-ground-beef-curry/"
+def transform_healthy(page): 
+    #page = "https://www.allrecipes.com/recipe/285749/brown-butter-apple-crisp-bars/"
     ingredients, directions = urlScraper(page)
     grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
     totalIng = []
@@ -35,6 +38,7 @@ def main():
         directions[index] = replacement(direction)
     for index, ingredient in enumerate(ingredients):
         ingredient = replacement(ingredient)
+        print(ingredient)
         name, unit, amount, preperation = reducement(ingredient, grammar)
         totalIng.append(Ingredient(name, unit, amount, preperation)) 
     #print ingredients 
@@ -47,5 +51,5 @@ def main():
     #print directions
     for index, direction in enumerate(directions): 
         print("Step {}: {} \n".format(index + 1, direction))
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()

@@ -8,10 +8,6 @@ healthy_unhealthy = [
         'unhealthy': ['chips', 'fries', 'french fries']
     }, 
     {
-        'healthy': 'sweet potato wedges', 
-        'unhealthy': ['chips', 'fries', 'french fries']
-    },
-    {
         'healthy': 'yogurt', 
         'unhealthy': ['ice cream']
     },
@@ -20,7 +16,7 @@ healthy_unhealthy = [
         'unhealthy': ['beer', 'spirits', 'coke', 'cola']
     },
     {
-        'healthy': 'olive oil', 
+        'healthy': 'margarine', 
         'unhealthy': 'butter'
     },
     {
@@ -33,12 +29,41 @@ healthy_unhealthy = [
     },
     {
         'healthy': 'English muffin',
-        'unhealthy': 'bagel'
+        'unhealthy': ['bagel', 'croissant', 'white bread', 'bread', 'bagels']
     },
     {
         'healthy': 'chicken',
         'unhealthy': 'pork'
+    },
+    {
+        'healthy': 'brown sugar',
+        'unhealthy': 'sugar'
+    },
+    {
+        'healthy': 'wheat flour',
+        'unhealthy': ['flour', 'cornstarch', 'starch', 'potato starch', 'all-purpose flour']
+    },
+    {
+      'healthy': 'coconut cream',
+      'unhealthy': ['heavy cream', 'cream']
+    },
+    {      
+        'healthy': 'egg white',
+        'unhealthy': ['egg', 'eggs']
+    },
+    {      
+        'healthy': 'low-fat cheese',
+        'unhealthy': ['cheese', 'cheddar', 'cheddar cheese', 'American cheese']
+    },
+    {
+        'healthy': 'oatmeal',
+        'unhealthy': ['cereal']
+    }, 
+    {
+        'healthy': 'honey', 
+        'unhealthy': ['syrup', 'corn syrup', 'maple syrup']
     }
+
 ]
 
 reduce_half = [
@@ -47,4 +72,5 @@ reduce_half = [
     'brown sugar', 
     'oil',
     'olive oil', 
+    ''
 ]
