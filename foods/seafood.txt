@@ -32,6 +32,7 @@ dab
 drum
 eel
 escolar
+fish
 flounder
 frog
 gray sole
