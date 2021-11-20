@@ -46,8 +46,9 @@ def transform_vegetarian(page):
         ingredient = replacement(ingredient)
         print(ingredient)
         name, unit, amount, preperation = parseTextChunk(ingredient, grammar)
-        if 'tofu' in name and len(name) > len('tofu'):
-            name = 'tofu'
+        for substitute_pair in vegetarian_nonvegetarian:
+            if substitute_pair['vegetarian'] in name and len(name) > len(substitute_pair['vegetarian']):
+                name = substitute_pair['vegetarian']
         totalIng.append(Ingredient(name, unit, amount, preperation)) 
     #print ingredients 
     for item in totalIng:
@@ -64,6 +65,8 @@ def transform_vegetarian(page):
 # transform_vegetarian('https://www.allrecipes.com/recipe/273320/cheesy-broccoli-stuffed-chicken-breasts/')
 
 # doesnt work - 'pork meat stew' not in our list of meats
-transform_vegetarian('https://www.allrecipes.com/recipe/36888/cowboy-tacos/')
+#transform_vegetarian('https://www.allrecipes.com/recipe/36888/cowboy-tacos/')
 
 #transform_vegetarian('https://www.allrecipes.com/recipe/26608/ground-beef-for-tacos/')
+
+transform_vegetarian('https://www.allrecipes.com/recipe/265400/easy-baked-fish-with-lemon/')
