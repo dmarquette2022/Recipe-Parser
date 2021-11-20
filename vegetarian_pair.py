@@ -13,7 +13,5 @@ vegetarian_nonvegetarian = [
     }
 ]
 
-reduce_half = ['just_a _placeholder']
-
 #for key, val in vegetarian_nonvegetarian[0].items():
 #    print(key, ': ', val)

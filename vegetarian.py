@@ -2,7 +2,7 @@ from nltk import word_tokenize, pos_tag, RegexpParser
 from unicodedata import numeric
 from pageScraper import urlScraper
 from IngredientParser import parseTextChunk, Ingredient
-from vegetarian_pair import vegetarian_nonvegetarian, reduce_half
+from vegetarian_pair import vegetarian_nonvegetarian
 
 def replacement(sentence): 
     sentence = word_tokenize(sentence)
@@ -13,20 +13,26 @@ def replacement(sentence):
     ans = " ".join(sentence)
     return ans
 
-def reducement(ingredient, grammar): 
-    name, unit, amount, preperation  = parseTextChunk(ingredient, grammar)
-    for pair in vegetarian_nonvegetarian:
-        if name in pair['non_vegetarian']:
-            name = pair['vegetarian']
-    if len(amount) == 1:
-        amount = numeric(amount)
-    elif amount[-1].isdigit():
-        amount = float(amount)
-    else:
-        amount = float(amount[:-1]) + numeric(amount[-1])
-    if name in reduce_half: 
-        amount = amount / 2 
-    return name, unit, amount, preperation
+"""
+# tried to add jackfruit as a substitute for pulled pork to add variety
+# but ingredients and instructions never include "pulled pork"
+# instead they have "pork shoulder" or something and describe how to shred/pull
+def replacement(sentence): 
+    sentence = word_tokenize(sentence)
+    pulled = False
+    for word in sentence:
+        if word.lower() == 'pulled':
+            pulled = True
+        for pair in vegetarian_nonvegetarian:
+            if word in pair['non_vegetarian']:
+                if not pulled:
+                    sentence[sentence.index(word)] = pair['vegetarian']
+                else:
+                    sentence[sentence.index(word)] = 'jackfruit'
+                    pulled = False
+    ans = " ".join(sentence)
+    return ans
+"""
 
 def transform_vegetarian(page): 
     #page = "https://www.allrecipes.com/recipe/273320/cheesy-broccoli-stuffed-chicken-breasts/"
@@ -40,6 +46,8 @@ def transform_vegetarian(page):
         ingredient = replacement(ingredient)
         print(ingredient)
         name, unit, amount, preperation = parseTextChunk(ingredient, grammar)
+        if 'tofu' in name and len(name) > len('tofu'):
+            name = 'tofu'
         totalIng.append(Ingredient(name, unit, amount, preperation)) 
     #print ingredients 
     for item in totalIng:
