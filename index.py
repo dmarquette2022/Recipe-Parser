@@ -1,5 +1,6 @@
 from IngredientParser import getRecipe
 from healthy import transform_healthy
+from vegetarian import transform_vegetarian
 
 def main(): 
     print("Please Enter the URL for Recipe: ")
@@ -13,6 +14,8 @@ def main():
         getRecipe(page)
     elif option == 2: 
         transform_healthy(page)
+    elif option == 3:
+        transform_vegetarian(page)
 
 if __name__ == '__main__':
     main()

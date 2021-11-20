@@ -69,4 +69,6 @@ def transform_vegetarian(page):
 
 #transform_vegetarian('https://www.allrecipes.com/recipe/26608/ground-beef-for-tacos/')
 
-transform_vegetarian('https://www.allrecipes.com/recipe/265400/easy-baked-fish-with-lemon/')
+#transform_vegetarian('https://www.allrecipes.com/recipe/265400/easy-baked-fish-with-lemon/')
+
+#transform_vegetarian('https://www.allrecipes.com/recipe/257954/caribbean-fish-soup/')
