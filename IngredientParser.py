@@ -158,10 +158,14 @@ class Step:
         hours = 0
         minutes = 0
         for i,item in enumerate(tokenTime):
-            if re.search('(hour)', item):
+            if re.search('(hour)', item) and item.isnumeric():
                 hours += int(tokenTime[i-1])
             if re.search("min", item) and not re.search("alumin", item):
-                minutes += int(tokenTime[i-1])
+                if item.isnumeric():
+                    minutes += int(tokenTime[i-1])
+                #if its here its likely "a few, several, one to two" so just adds 3 as a general rule
+                else:
+                    minutes += 3
         if hours == 0:
             return minutes
         else:
