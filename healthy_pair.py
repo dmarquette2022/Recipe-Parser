@@ -21,7 +21,7 @@ healthy_unhealthy = [
     },
     {
         'healthy': 'unsweetened',
-        'unhealthy': 'sweetened'
+        'unhealthy': ['sweetened']
     },
     {
         'healthy': 'nuts',
@@ -33,11 +33,11 @@ healthy_unhealthy = [
     },
     {
         'healthy': 'chicken',
-        'unhealthy': 'pork'
+        'unhealthy': ['pork']
     },
     {
         'healthy': 'brown sugar',
-        'unhealthy': 'sugar'
+        'unhealthy': ['sugar']
     },
     {
         'healthy': 'wheat flour',
@@ -69,7 +69,7 @@ healthy_unhealthy = [
     },
     {
         'healthy': 'shredded coconut', 
-        'unhealthy': ['bread crumb']
+        'unhealthy': ['bread crumbs']
     },
     {
         'healthy': 'brown rice', 

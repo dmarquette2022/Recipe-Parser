@@ -2,7 +2,7 @@ from nltk import word_tokenize, pos_tag, RegexpParser
 from unicodedata import numeric
 from pageScraper import urlScraper
 from IngredientParser import parseTextChunk, Ingredient
-from vegetarian_pair import vegetarian_nonvegetarian
+from vegetarian_pair import vegetarian_nonvegetarian, protein_subs, vegetables
 
 def sauce_replacement(sentence): 
     sentence = word_tokenize(sentence)
@@ -55,6 +55,65 @@ def transform_vegetarian(page):
     for index, direction in enumerate(directions): 
         print("Step {}: {} \n".format(index + 1, direction))
 
+############################################################################################################
+def food_replacement_from(sentence):
+    sentence = word_tokenize(sentence)
+    for word in sentence: 
+        for pair in vegetarian_nonvegetarian:
+            if word in protein_subs:
+                sentence[sentence.index(word)] = 'chicken'
+    ans = " ".join(sentence)
+    return ans
+
+def food_replacement_from2(sentence):
+    sentence = word_tokenize(sentence)
+    changed = ''
+    for word in sentence: 
+        if word in vegetables:
+            if changed == '' or word == changed:
+                changed = word
+                sentence[sentence.index(word)] = 'chicken'
+            break
+    ans = " ".join(sentence)
+    return ans
+
+def transform_from_vegetarian(page): 
+    #page = "https://www.allrecipes.com/recipe/273320/cheesy-broccoli-stuffed-chicken-breasts/"
+    ingredients, directions = urlScraper(page)
+    ##grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
+    grammar = r"CHUNK: {<NN|NNS|NNP>}"
+    totalIng = []
+    #for index, direction in enumerate(directions): 
+    #    directions[index] = sauce_replacement(direction)
+
+    for index, direction in enumerate(directions): 
+        directions[index] = food_replacement_from(direction)
+
+    for index, direction in enumerate(directions): 
+        directions[index] = food_replacement_from2(direction)
+
+    for index, ingredient in enumerate(ingredients):
+        if used_2:
+           ingredient = food_replacement_from2(ingredient)
+        else:
+            ingredient = food_replacement_from(ingredient)
+        print(ingredient)
+        name, unit, amount, preperation = parseTextChunk(ingredient, grammar)
+        for substitute_pair in vegetarian_nonvegetarian:
+            if substitute_pair['vegetarian'] in name and len(name) > len(substitute_pair['vegetarian']):
+                name = substitute_pair['vegetarian']
+        totalIng.append(Ingredient(name, unit, amount, preperation)) 
+    #print ingredients 
+    for item in totalIng:
+        print("Name: " + item.name)
+        print("Unit: " + str(item.unit))
+        print("Amount: " + str(item.quantity))
+        print("Preperation: " + str(item.preperation))
+        print('\n')
+    #print directions
+    for index, direction in enumerate(directions): 
+        print("Step {}: {} \n".format(index + 1, direction))
+
 # doesnt work - says ingredient is 'skinless' and preparation is ['boneless', 'chicken', 'breast']
 # transform_vegetarian('https://www.allrecipes.com/recipe/273320/cheesy-broccoli-stuffed-chicken-breasts/')
 
@@ -68,3 +127,5 @@ def transform_vegetarian(page):
 #transform_vegetarian('https://www.allrecipes.com/recipe/257954/caribbean-fish-soup/')
 
 #transform_vegetarian('https://www.allrecipes.com/recipe/247235/lechon-manok-pinoy-roast-chicken/')
+
+#transform_from_vegetarian('https://www.allrecipes.com/recipe/229764/easy-vegetarian-spinach-lasagna/')

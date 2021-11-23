@@ -34,6 +34,17 @@ meat_sauces = [
     'lechon sauce'
 ]
 
+protein_subs = [
+    'tofu',
+    'tempeh',
+    'jackfruit'
+    'seitan',
+    'beyond meat',
+]
+
+vegetables = txtToList('foods/vegetables.txt')
+#print('spinach' in vegetables)
+
 vegetarian_nonvegetarian = [
     {
         'vegetarian': 'tofu', 
