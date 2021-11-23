@@ -16,13 +16,11 @@ def gatherURLs():
     options = Options()
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--headless')
-    options.page_load_strategy = 'normal'
     caps = DesiredCapabilities().CHROME
-    caps["pageLoadStrategy"] = "eager"  #  complete
     driver = webdriver.Chrome(desired_capabilities=caps, executable_path="driver/chromedriver", chrome_options=options)
     driver.get(page)
     element = driver.find_element_by_id("category-page-list-related-load-more-button")
-    for i in range(10):
+    for i in range(1):
         element.click()
         driver.implicitly_wait(3)
     html = driver.page_source
@@ -51,6 +49,10 @@ def gatherIngredients():
                 totIng[ing.type] = {ing.name:1}
     for type in totIng:
         totIng[type] = sortVote(totIng[type])
+        totIng[type] = list(totIng[type])[-10:]
+        totIng[type] = list(reversed(totIng[type]))
+
+    
     return totIng
 
 

@@ -1,4 +1,4 @@
-from nltk import word_tokenize, pos_tag, RegexpParser
+from nltk import word_tokenize
 from unicodedata import numeric
 from pageScraper import urlScraper
 from IngredientParser import parseTextChunk, Ingredient
@@ -18,19 +18,20 @@ def reducement(ingredient, grammar):
     for pair in healthy_unhealthy:
         if name in pair['unhealthy']:
             name = pair['healthy']
-    if len(amount) == 1:
-        amount = numeric(amount)
-    elif amount[-1].isdigit():
-        amount = float(amount)
-    else:
-        amount = float(amount[:-1]) + numeric(amount[-1])
-    if name in reduce_half: 
-        amount = amount / 2 
+    if len(amount) != 0:
+        if len(amount) == 1:
+            amount = numeric(amount)
+        elif amount[-1].isdigit():
+            amount = float(amount)
+        else:
+            amount = float(amount[:-1]) + numeric(amount[-1])
+        if name in reduce_half: 
+            amount = amount / 2 
     return name, unit, amount, preperation
-     
+    
 
 def transform_healthy(page): 
-    #page = "https://www.allrecipes.com/recipe/285749/brown-butter-apple-crisp-bars/"
+    #page = "https://www.allrecipes.com/recipe/16354/easy-meatloaf/"
     ingredients, directions = urlScraper(page)
     grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
     totalIng = []
@@ -38,7 +39,6 @@ def transform_healthy(page):
         directions[index] = replacement(direction)
     for index, ingredient in enumerate(ingredients):
         ingredient = replacement(ingredient)
-        print(ingredient)
         name, unit, amount, preperation = reducement(ingredient, grammar)
         totalIng.append(Ingredient(name, unit, amount, preperation)) 
     #print ingredients 
@@ -51,5 +51,6 @@ def transform_healthy(page):
     #print directions
     for index, direction in enumerate(directions): 
         print("Step {}: {} \n".format(index + 1, direction))
-# if __name__ == '__main__':
-#     main()
+if __name__ == '__main__':
+    page = "https://www.allrecipes.com/recipe/16354/easy-meatloaf/"
+    transform_healthy(page)
