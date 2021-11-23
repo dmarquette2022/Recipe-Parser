@@ -222,9 +222,9 @@ def getRecipe(page):
         print('\n')
     print("Tools: " + str(set(totTools)))
     print("Methods: " + str(set(totMethods)))
-    for steps in t.instructions:
-        for index, step in enumerate(steps): 
-            print("Step " + str(index) + " : " + str(step.ingredients) + " " + str(step.tools))
-
-# if __name__ == '__main__':
-#     getRecipe()
+    #print directions
+    for index, direction in enumerate(directions): 
+        print("Step {}: {} \n".format(index + 1, direction))
+if __name__ == '__main__':
+    page = 'https://www.allrecipes.com/recipe/25203/brown-sugar-meatloaf/'
+    getRecipe(page)

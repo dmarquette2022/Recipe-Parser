@@ -1,11 +1,12 @@
 import bs4 as bs
 import urllib.request
+import requests
 
 def urlScraper(page):
     ingredients = []
     instructions = []
-    source = urllib.request.urlopen(page).read()
-    soup = bs.BeautifulSoup(source,'lxml')
+    source = requests.get(page)
+    soup = bs.BeautifulSoup(source.text,'lxml')
     htmlIngredients = soup.find_all('span', {'class': "ingredients-item-name"})
     for item in htmlIngredients:
         ingredients.append(item.text)

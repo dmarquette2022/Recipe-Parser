@@ -17,7 +17,7 @@ healthy_unhealthy = [
     },
     {
         'healthy': 'margarine', 
-        'unhealthy': 'butter'
+        'unhealthy': ['butter', 'unsalted butter', 'salted butter']
     },
     {
         'healthy': 'unsweetened',
@@ -25,7 +25,7 @@ healthy_unhealthy = [
     },
     {
         'healthy': 'nuts',
-        'unhealthy': 'granola'
+        'unhealthy': ['granola']
     },
     {
         'healthy': 'English muffin',
@@ -57,11 +57,23 @@ healthy_unhealthy = [
     },
     {
         'healthy': 'oatmeal',
-        'unhealthy': ['cereal']
+        'unhealthy': ['cereal', 'cornflake']
     }, 
     {
         'healthy': 'honey', 
         'unhealthy': ['syrup', 'corn syrup', 'maple syrup']
+    },
+    {
+        'healthy': 'low-fat milk', 
+        'unhealthy': ['milk', 'whole milk', 'whole-milk']
+    },
+    {
+        'healthy': 'shredded coconut', 
+        'unhealthy': ['bread crumb']
+    },
+    {
+        'healthy': 'brown rice', 
+        'unhealthy': ['rice', 'white rice', 'sushi rice']
     }
 
 ]
@@ -72,5 +84,6 @@ reduce_half = [
     'brown sugar', 
     'oil',
     'olive oil', 
-    ''
+    'rice', 
+    'white rice', 
 ]
