@@ -1,5 +1,7 @@
 # Recipe-Parser
 
+Group Members: David Marquette, Cynthia Xie, Alejandro Cardozo-Mongelos
+
 The code in this repository runs on Python 3.9
 
 All packages used are included in the requirements.txt file, which can be installed using the command:
