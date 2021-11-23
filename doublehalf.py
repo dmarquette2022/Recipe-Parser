@@ -19,12 +19,12 @@ def transformation(ingredient, grammar, double):
     return name, unit, amount, preperation
     
 
-def double_half(page): 
+def double_half(page, double): 
     ingredients, _ = urlScraper(page)
     grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
     totalIng = []
     for index, ingredient in enumerate(ingredients):
-        name, unit, amount, preperation = transformation(ingredient, grammar, True)
+        name, unit, amount, preperation = transformation(ingredient, grammar, double)
         totalIng.append(Ingredient(name, unit, amount, preperation)) 
     #print ingredients 
     for item in totalIng:
