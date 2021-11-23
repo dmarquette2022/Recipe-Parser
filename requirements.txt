@@ -3,3 +3,9 @@ bs4
 lxml
 requests
 unidecode
+re
+selenium
+urllib
+copy
+unicode
+json

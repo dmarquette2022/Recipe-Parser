@@ -53,10 +53,10 @@ def parseText(tokenizedItem, original):
 def categorize(self):
     # special cases:
     if self.name.lower().find('sauce') >= 0: return 'S'
+    if self.name.lower().find('broth') >= 0 or self.name.lower().find('stock') >= 0: return '?'
     # normal execution:
     types = ''
     if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in spices_list) and len(types) ==0: types = 'H'
-    
     if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in meats_list) and len(types) ==0: types ='M' 
     if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in vegetables_list) and len(types) ==0: types = 'V'
     if any(set(self.name.strip().split(' ')).intersection(set(example.lower().split(' '))) for example in dairy_list) and len(types) ==0: types = 'D' 
@@ -221,6 +221,8 @@ def findAllIng(url):
     for item in ingredients:
         grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
         name, unit, amount, preperation = parseTextChunk(item, grammar)
+        if name == "" or name == " ":
+            continue
         # parsedIng = pos_tag(word_tokenize(item))
         # name, unit, amount = parseText(parsedIng, item)
         totIng.append(Ingredient(name, unit, amount, preperation))
