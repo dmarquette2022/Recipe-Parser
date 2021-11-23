@@ -2,7 +2,7 @@ from nltk import word_tokenize, pos_tag, RegexpParser
 from unicodedata import numeric
 from pageScraper import urlScraper
 from IngredientParser import parseTextChunk, Ingredient
-from vegetarian_pair import vegetarian_nonvegetarian, protein_subs, vegetables
+from vegetarian_pair import vegetarian_nonvegetarian, protein_subs, vegetables, all_non_veg
 
 def sauce_replacement(sentence): 
     sentence = word_tokenize(sentence)
@@ -59,9 +59,9 @@ def transform_vegetarian(page):
 def food_replacement_from(sentence):
     sentence = word_tokenize(sentence)
     for word in sentence: 
-        for pair in vegetarian_nonvegetarian:
-            if word in protein_subs:
-                sentence[sentence.index(word)] = 'chicken'
+        if word in protein_subs:
+            sentence[sentence.index(word)] = 'chicken'
+            #break
     ans = " ".join(sentence)
     return ans
 
@@ -73,7 +73,6 @@ def food_replacement_from2(sentence):
             if changed == '' or word == changed:
                 changed = word
                 sentence[sentence.index(word)] = 'chicken'
-            break
     ans = " ".join(sentence)
     return ans
 
@@ -83,25 +82,28 @@ def transform_from_vegetarian(page):
     ##grammar = r"CHUNK: {<JJ>*<NN|NNS|NNP>}"
     grammar = r"CHUNK: {<NN|NNS|NNP>}"
     totalIng = []
-    #for index, direction in enumerate(directions): 
-    #    directions[index] = sauce_replacement(direction)
 
-    for index, direction in enumerate(directions): 
-        directions[index] = food_replacement_from(direction)
-
-    for index, direction in enumerate(directions): 
-        directions[index] = food_replacement_from2(direction)
+    meats = False
+    # replaces protein substitute with chicken
+    for index, direction in enumerate(directions):
+        if not meats:
+            directions[index] = food_replacement_from(direction)
+            # check if any meat in direction
+            meats = any(x in all_non_veg for x in word_tokenize(direction))
+    # if still no meat, then change a vegetable to chicken
+    if not meats:
+        for index, direction in enumerate(directions): 
+            if not meats:
+                directions[index] = food_replacement_from2(direction)
+                meats = any(x in all_non_veg for x in word_tokenize(direction))
 
     for index, ingredient in enumerate(ingredients):
-        if used_2:
+        if not meats:
            ingredient = food_replacement_from2(ingredient)
         else:
             ingredient = food_replacement_from(ingredient)
         print(ingredient)
         name, unit, amount, preperation = parseTextChunk(ingredient, grammar)
-        for substitute_pair in vegetarian_nonvegetarian:
-            if substitute_pair['vegetarian'] in name and len(name) > len(substitute_pair['vegetarian']):
-                name = substitute_pair['vegetarian']
         totalIng.append(Ingredient(name, unit, amount, preperation)) 
     #print ingredients 
     for item in totalIng:
@@ -129,3 +131,5 @@ def transform_from_vegetarian(page):
 #transform_vegetarian('https://www.allrecipes.com/recipe/247235/lechon-manok-pinoy-roast-chicken/')
 
 #transform_from_vegetarian('https://www.allrecipes.com/recipe/229764/easy-vegetarian-spinach-lasagna/')
+
+#transform_from_vegetarian('https://www.allrecipes.com/recipe/258482/refreshing-salad-with-grilled-oyster-mushrooms/')

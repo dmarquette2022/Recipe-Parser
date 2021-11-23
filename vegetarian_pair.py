@@ -6,6 +6,9 @@ def txtToList(txtfile):
         meats.append(line.strip())
     return meats
 
+
+meats = txtToList('foods/meats.txt')
+seafood = txtToList('foods/seafood.txt')
 meat_sauces = [
     'anchovy essence',
     'duck sauce',
@@ -42,17 +45,19 @@ protein_subs = [
     'beyond meat',
 ]
 
+all_non_veg = meats + seafood + meat_sauces
+
 vegetables = txtToList('foods/vegetables.txt')
-#print('spinach' in vegetables)
+
 
 vegetarian_nonvegetarian = [
     {
         'vegetarian': 'tofu', 
-        'non_vegetarian': txtToList('foods/meats.txt')
+        'non_vegetarian': meats
     },
     {
         'vegetarian': 'tempeh', 
-        'non_vegetarian': txtToList('foods/seafood.txt')
+        'non_vegetarian': seafood
     },
     {
         'vegetarian': 'tomato sauce', 
