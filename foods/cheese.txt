@@ -1,4 +1,4 @@
-abondance fermlere herve mons
+cheese
 american cheese
 appenzeller
 bergenost
@@ -6,12 +6,9 @@ blue cheese
 borough market stilton
 brick cheese
 brie cheese
-butter
 cabot
 cahill’s porter
 camembert cheese
-campode montalban
-casein
 cheddar cheese
 cheshire cheese
 colby cheese
@@ -20,23 +17,22 @@ cordobes
 cottage cheese
 cougar gold cheddar
 cream cheese
+cream cheese
 cup cheese
 drunken goat cheese
 dublinger
 edam cheese
+swiss cheese
 emmenthal
-english derby with sage
 farmer cheese
 feta cheese
-fiscalim sand joaquin
-ghee
 goat cheese
 gorgonzola cheese
 gouda cheese
 government cheese
 gran queso
 gruyere cheese
-half & half
+queso
 havarti cheese
 herve mons pave de nord
 herve mons tomme des bois noir
@@ -50,8 +46,6 @@ liederkranz cheese
 limburger cheese
 manchego cheese
 mascarpone cheese
-buttermilk
-goat milk
 mimolette
 montasio
 monterey jack cheese
@@ -75,9 +69,8 @@ ricotta cheese
 romanian urda
 romano cheese
 roquefort cheese
-salad dressings, creamy
 sheep milk cheese
-sour cream
+sheep cheese
 spray cheese
 stilton cheese
 string cheese
@@ -88,21 +81,5 @@ ubriaco del plave po-si
 uniekaas reserve
 uniekaas robusto
 velveeta
-whey protein powder
 white cheese
 yellow cheese
-yogurt
-custard
-cream
-whipped cream
-sour cream
-heavy cream
-half and half
-whole milk
-skim milk
-low-fat milk
-whipping cream
-light cream
-ice cream
-clotted cream
-pure cream

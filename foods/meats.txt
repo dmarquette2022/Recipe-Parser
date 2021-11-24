@@ -7,6 +7,7 @@ bone soup from allowable meats
 buffalo, bison
 calf liver
 caribou
+chorizo
 goat
 ham
 horse
@@ -47,3 +48,8 @@ pheasant
 quail
 squab
 turkey
+sausage
+hotdog
+burger
+patty
+
